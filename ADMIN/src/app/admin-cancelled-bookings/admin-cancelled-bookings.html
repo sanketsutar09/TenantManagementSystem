@@ -1,0 +1,99 @@
+<div class="lg:p-6 h-screen sm:pt-20    ">
+  <!-- 🔍 Filter Section -->
+  <div class="grid grid-cols-1 md:grid-cols-5 gap-4 mb-6 text-sm text-indigo-700 bg-indigo-50 px-4 py-4 rounded-lg shadow-sm border border-indigo-200 ">
+    <!-- Email -->
+    <div>
+      <label class="block text-sm font-medium text-gray-700 mb-1">User Email</label>
+      <input type="text"
+             [(ngModel)]="filterEmail"
+             (ngModelChange)="onSearchChange()"
+             placeholder="Enter email"
+             class="w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
+    </div>
+
+    <!-- Check-In From -->
+    <div>
+      <label class="block text-sm font-medium text-gray-700 mb-1">Check-In From</label>
+      <input type="date"
+             [(ngModel)]="filterCheckInFromDate"
+             (change)="onSearchChange()"
+             class="w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
+    </div>
+
+    <!-- Check-In To -->
+    <div>
+      <label class="block text-sm font-medium text-gray-700 mb-1">Check-In To</label>
+      <input type="date"
+             [(ngModel)]="filterCheckInToDate"
+             (change)="onSearchChange()"
+             class="w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
+    </div>
+
+    <!-- Cancelled From -->
+    <div>
+      <label class="block text-sm font-medium text-gray-700 mb-1">Cancelled From</label>
+      <input type="date"
+             [(ngModel)]="filterCancelledFromDate"
+             (change)="onSearchChange()"
+             class="w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
+    </div>
+
+    <!-- Cancelled To -->
+    <div>
+      <label class="block text-sm font-medium text-gray-700 mb-1">Cancelled To</label>
+      <input type="date"
+             [(ngModel)]="filterCancelledToDate"
+             (change)="onSearchChange()"
+             class="w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
+    </div>
+  </div>
+
+  <!-- 🏷 Active Filters -->
+ <div class="mb-6 text-sm text-indigo-700 bg-indigo-50 px-4 py-2 rounded-lg shadow-sm border border-indigo-200 flex justify-between items-center">
+    <div>
+      <strong>Active Filters:</strong> {{ activeFilterLabel }}
+    </div>
+    <div class="space-x-2">
+      <!-- 🔄 Reset Filters -->
+      <button (click)="onRefresh()"
+              class="bg-gray-500 text-white px-4 py-2 rounded-lg hover:bg-gray-600 shadow-md transition">
+        🔄 Reset Filters
+      </button>
+      <!-- 📄 Generate Report -->
+      <button (click)="generateReport('Cancelled Bookings', 'CancelledBookingTable')"
+              class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 shadow-md transition">
+        📄 Generate Report
+      </button>
+    </div>
+  </div>
+  <!-- Cancelled Bookings -->
+  <div class="bg-white rounded-xl shadow p-6 bg-opacity-30 ">
+    <h3 class="text-xl font-semibold mb-4 text-indigo-600 border-b border-black pb-2">Cancelled Bookings</h3>
+
+    <!-- Card Grid -->
+    <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+      @for (cb of filteredCancelledProperties; track $index) {
+      <div class="border border-gray-200 rounded-xl shadow hover:shadow-lg transition bg-white p-5">
+        <div class="flex justify-between items-center mb-3">
+          <h4 class="text-lg font-semibold text-gray-800">{{ cb.title }}</h4>
+          <span class="text-sm bg-red-100 text-red-600 px-3 py-1 rounded-full">Cancelled</span>
+        </div>
+
+        <p class="text-sm text-gray-600 mb-2">📍 {{ cb.address }}</p>
+        <p class="text-gray-700 font-medium mb-2">💰 ₹{{ cb.price }}</p>
+        <p class="text-xs px-2 py-1 rounded bg-gray-100 inline-block mb-3">{{ cb.furnished }}</p>
+
+        <div class="text-sm text-gray-700 mb-3">
+          <p><span class="font-medium">Owner:</span> {{ cb.ownerName }} ({{ cb.ownerEmail }})</p>
+          <p><span class="font-medium">Booked By:</span> {{ cb.userName }} ({{ cb.userEmail }})</p>
+        </div>
+
+        <div class="mt-3 border-t pt-2 text-xs text-gray-500">
+          <p><span class="font-medium">Check-In:</span> {{ cb.checkInDate }}</p>
+          <p><span class="font-medium">Cancelled On:</span> {{ cb.cancelledAt }}</p>
+        </div>
+      </div>
+      }
+    </div>
+  </div>
+</div>

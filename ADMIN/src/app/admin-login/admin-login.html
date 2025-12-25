@@ -1,0 +1,68 @@
+<!-- <div class="flex items-center justify-center min-h-screen bg-gray-100">
+  <div class="bg-white shadow-lg rounded-lg p-8 w-96">
+    <h2 class="text-2xl font-bold mb-6 text-center text-indigo-600">Admin Login</h2>
+
+    <input type="email" placeholder="Email"
+           [(ngModel)]="email"
+           class="w-full border p-2 rounded mb-4 focus:outline-none focus:ring-2 focus:ring-indigo-400">
+
+    <input type="password" placeholder="Password"
+           [(ngModel)]="password"
+           class="w-full border p-2 rounded mb-4 focus:outline-none focus:ring-2 focus:ring-indigo-400">
+
+    <button (click)="login()"
+            class="w-full bg-indigo-500 hover:bg-indigo-600 text-white p-2 rounded">
+      Login
+    </button>
+  </div>
+
+ 
+</div>
+
+
+ -->
+
+ <div class="flex items-center justify-center min-h-screen    ">
+  <div class="bg-blend-soft-light bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500  shadow-2xl rounded-lg p-10 w-96 border border-black">
+    
+    <!-- Title -->
+    <h2 class="text-3xl font-extrabold mb-6 text-center text-indigo-950 tracking-wide relative">
+      Admin Login
+      <span class="block w-16 h-1 bg-white/70 mx-auto mt-2 rounded-full"></span>
+    </h2>
+
+    <!-- Email -->
+    <div class="relative mb-5">
+      <span class="absolute inset-y-0 left-3 flex items-center text-gray-400">
+        <i class="fas fa-envelope"></i>
+      </span>
+      <input type="email" placeholder="Email" [(ngModel)]="email"
+        class="w-full pl-10 pr-4 py-3 rounded-xl text-black bg-white border border-gray-300 
+               focus:outline-none focus:ring-2 focus:ring-pink-400 shadow-sm transition">
+    </div>
+
+    <!-- Password -->
+    <div class="relative mb-6">
+      <span class="absolute inset-y-0 left-3 flex items-center text-gray-400">
+        <i class="fas fa-lock"></i>
+      </span>
+      <input type="password" placeholder="Password" [(ngModel)]="password"
+        class="w-full pl-10 pr-4 py-3 rounded-xl text-black bg-white border border-gray-300 
+               focus:outline-none focus:ring-2 focus:ring-pink-400 shadow-sm transition">
+    </div>
+
+    <!-- Button -->
+    <button (click)="login()"
+      class="w-full bg-gradient-to-r from-indigo-500 to-pink-500 hover:from-indigo-600 hover:to-pink-600 
+             text-white font-semibold py-3 border border-white rounded-xl shadow-lg hover:shadow-2xl 
+             transform hover:-translate-y-1 transition-all duration-300">
+      Login
+    </button>
+
+    <!-- Forgot Password -->
+    <!-- <p class="text-center text-white/80 mt-4 text-sm">
+      Forgot your password? 
+      <a href="#" class="text-yellow-300 hover:underline">Reset here</a>
+    </p> -->
+  </div>
+</div>

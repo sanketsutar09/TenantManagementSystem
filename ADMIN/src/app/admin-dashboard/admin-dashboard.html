@@ -1,0 +1,225 @@
+<div class="p-8 min-h-screen sm:pt-10">
+  <h2 class="text-4xl font-extrabold text-center mb-12 text-indigo-700 tracking-wide drop-shadow">
+    Admin Dashboard
+  </h2>
+
+  <!-- Filter Section -->
+  <div class="flex flex-col sm:flex-row justify-center items-center mb-12 gap-4">
+    <input [(ngModel)]="filterEmail" (ngModelChange)="onSearchChange()" type="text"
+      placeholder="🔎 Filter by email"
+      class="bg-white border border-gray-300 shadow-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 rounded-xl px-5 py-3 w-full sm:w-1/3 transition text-gray-700" />
+
+    <button (click)="onRefresh()"
+      class="bg-indigo-600 text-white font-medium px-6 py-3 rounded-xl hover:bg-indigo-700 shadow-md transition transform hover:scale-105">
+      🔄 Reset
+    </button>
+
+    <button (click)="generateFullReport()"
+      class="bg-green-600 text-white px-6 py-3 rounded-xl shadow-md hover:bg-green-700 transition transform hover:scale-105">
+      📄 Generate Full Report
+    </button>
+  </div>
+
+  <!-- DATA SECTIONS -->
+  <div class="grid grid-cols-1 gap-12">
+
+    <!-- USERS -->
+    <div class="p-6 rounded-2xl bg-indigo-50 border-l-4 border-indigo-500 shadow">
+      <h3 class="text-2xl font-semibold mb-6 text-indigo-700 flex items-center gap-2">👥 Users</h3>
+      <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+        @for (u of filteredUsers.slice(0, visibleUsers); track $index) {
+          <div
+            class="p-6 border border-gray-200 rounded-2xl shadow bg-white hover:shadow-lg hover:-translate-y-1 transition">
+            <h4 class="text-xl font-bold text-gray-800 mb-1">{{ u.name }}</h4>
+            <p class="text-gray-500 text-sm mb-2">{{ u.email }}</p>
+            <p class="text-gray-500 text-sm mb-2"><span class="font-semibold">Registered On:</span>{{ u.createdAt | date}}</p>
+            <p class="text-sm text-gray-700"><span class="font-semibold">Login Count:</span> {{ u.loginCount }}</p>
+          </div>
+        }
+      </div>
+      @if (filteredUsers.length > 3) {
+        <div class="text-center mt-4">
+          <button (click)="toggleShow('users', filteredUsers.length)"
+            class="bg-indigo-600 text-white px-4 py-2 rounded-xl hover:bg-indigo-700 shadow transition">
+            {{ visibleUsers >= filteredUsers.length ? 'Show Less' : 'Show More' }}
+          </button>
+        </div>
+      }
+    </div>
+
+    <!-- PROPERTIES -->
+    <div class="p-6 rounded-2xl bg-green-50 border-l-4 border-green-500 shadow">
+      <h3 class="text-2xl font-semibold mb-6 text-green-700 flex items-center gap-2">🏠 Properties</h3>
+      <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+        @for (p of filteredProperties.slice(0, visibleProperties); track $index) {
+          <div
+            class="p-6 border border-gray-200 rounded-2xl shadow bg-white hover:shadow-lg hover:-translate-y-1 transition">
+            <h4 class="text-xl font-bold text-gray-800">{{ p.title }}</h4>
+            <p class="text-gray-500 text-sm mb-3">{{ p.type }} • {{ p.bhk }}</p>
+            <ul class="space-y-1 text-sm text-gray-700">
+              <li><span class="font-semibold">Description:</span> {{ p.description }}</li>
+              <li><span class="font-semibold">Price:</span> ₹{{ p.price }}</li>
+              <li><span class="font-semibold">Size:</span> {{ p.size }} sqft</li>
+              <li><span class="font-semibold">Address:</span> {{ p.address }}</li>
+              <li><span class="font-semibold">Furnishing:</span> {{ p.furnished }}</li>
+              <li><span class="font-semibold">Status:</span> {{ p.status }}</li>
+            </ul>
+          </div>
+        }
+      </div>
+      @if (filteredProperties.length > 3) {
+        <div class="text-center mt-4">
+          <button (click)="toggleShow('properties', filteredProperties.length)"
+            class="bg-green-600 text-white px-4 py-2 rounded-xl hover:bg-green-700 shadow transition">
+            {{ visibleProperties >= filteredProperties.length ? 'Show Less' : 'Show More' }}
+          </button>
+        </div>
+      }
+    </div>
+
+    <!-- DELETED PROPERTIES -->
+    <div class="p-6 rounded-2xl bg-red-50 border-l-4 border-red-500 shadow">
+      <h3 class="text-2xl font-semibold mb-6 text-red-700 flex items-center gap-2">🗑️ Deleted Properties</h3>
+      <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+        @for (dp of filteredDeletedProperties.slice(0, visibleDeletedProperties); track $index) {
+          <div
+            class="border border-gray-200 rounded-xl shadow hover:shadow-lg hover:-translate-y-1 transition bg-white p-5">
+            <div class="flex justify-between items-center mb-3">
+              <h4 class="text-lg font-semibold text-gray-800">{{ dp.title }}</h4>
+              <span class="text-sm bg-red-100 text-red-600 px-3 py-1 rounded-full">Deleted</span>
+            </div>
+            <div class="space-y-2 text-sm text-gray-700">
+              <p><span class="font-medium text-gray-600">Owner:</span> {{ dp.name }} ({{ dp.email }})</p>
+              <p><span class="font-medium text-gray-600">BHK:</span> {{ dp.bhk }}</p>
+              <p><span class="font-medium text-gray-600">Size:</span> {{ dp.size }} sq.ft</p>
+              <p><span class="font-medium text-gray-600">Price:</span> ₹{{ dp.price }}</p>
+              <p><span class="font-medium text-gray-600">Address:</span> {{ dp.address }}</p>
+            </div>
+            <div class="mt-4 border-t pt-3 text-xs text-gray-500">
+              <p><span class="font-medium">Created On:</span> {{ dp.createdOn | date}}</p>
+              <p><span class="font-medium">Deleted On:</span> {{ dp.deletedOn | date}}</p>
+            </div>
+          </div>
+        }
+      </div>
+      @if (filteredDeletedProperties.length > 3) {
+        <div class="text-center mt-4">
+          <button (click)="toggleShow('deleted', filteredDeletedProperties.length)"
+            class="bg-red-600 text-white px-4 py-2 rounded-xl hover:bg-red-700 shadow transition">
+            {{ visibleDeletedProperties >= filteredDeletedProperties.length ? 'Show Less' : 'Show More' }}
+          </button>
+        </div>
+      }
+    </div>
+
+    <!-- BOOKINGS -->
+    <div class="p-6 rounded-2xl bg-yellow-50 border-l-4 border-yellow-500 shadow">
+      <h3 class="text-2xl font-semibold mb-6 text-yellow-700 flex items-center gap-2">📑 Bookings</h3>
+      <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+        @for (b of filteredBookings.slice(0, visibleBookings); track $index) {
+          <div
+            class="bg-white border border-gray-200 rounded-2xl shadow hover:shadow-lg hover:-translate-y-1 transition p-5 flex flex-col justify-between">
+            <div class="flex justify-between items-center border-b pb-2 mb-3">
+              <span class="text-sm font-medium text-gray-500">#{{ $index + 1 }}</span>
+              <span
+                class="text-xs bg-indigo-100 text-indigo-700 px-3 py-1 rounded-full font-medium">Booked On: {{ b.createdAt | date }}</span>
+            </div>
+            <div class="mb-4">
+              <h4 class="text-lg font-semibold text-gray-800">{{ b.title }}</h4>
+              <p class="text-sm text-gray-600">{{ b.type }} - {{ b.bhk }}</p>
+              <p class="text-sm text-gray-600">{{ b.address }}</p>
+              <p class="mt-2 text-green-700 font-semibold">₹{{ b.price }}</p>
+              <span
+                class="inline-block mt-1 text-xs px-2 py-1 rounded-full bg-indigo-50 text-indigo-600 font-medium">{{ b.furnished }}</span>
+            </div>
+            <div class="mb-4">
+              <h5 class="text-sm font-semibold text-gray-700 mb-1">👤 Owner Details</h5>
+              <p class="text-sm"><span class="font-medium">Name:</span> {{ b.ownerName }}</p>
+              <p class="text-sm"><span class="font-medium">Email:</span> {{ b.ownerEmail }}</p>
+            </div>
+            <div class="mb-4">
+              <h5 class="text-sm font-semibold text-gray-700 mb-1">🏠 Tenant Details</h5>
+              <p class="text-sm"><span class="font-medium">Name:</span> {{ b.name }}</p>
+              <p class="text-sm"><span class="font-medium">Email:</span> {{ b.email }}</p>
+              <p class="text-sm"><span class="font-medium">Phone:</span> {{ b.phone }}</p>
+              <p class="text-sm"><span class="font-medium">Emergency:</span> {{ b.emergencyPhone }}</p>
+              <p class="text-sm"><span class="font-medium">DOB:</span> {{ b.dob | date}}</p>
+            </div>
+            <div class="mb-4">
+              <h5 class="text-sm font-semibold text-gray-700 mb-1">🪪 Verification</h5>
+              <p class="text-sm"><span class="font-medium">ID Type:</span> {{ b.govIdType }}</p>
+              <p class="text-sm"><span class="font-medium">ID Number:</span> {{ b.govIdNumber }}</p>
+            </div>
+          </div>
+        }
+      </div>
+      @if (filteredBookings.length > 3) {
+        <div class="text-center mt-4">
+          <button (click)="toggleShow('bookings', filteredBookings.length)"
+            class="bg-yellow-600 text-white px-4 py-2 rounded-xl hover:bg-yellow-700 shadow transition">
+            {{ visibleBookings >= filteredBookings.length ? 'Show Less' : 'Show More' }}
+          </button>
+        </div>
+      }
+    </div>
+
+    <!-- CANCELLED BOOKINGS -->
+    <div class="p-6 rounded-2xl bg-orange-50 border-l-4 border-orange-500 shadow">
+      <h3 class="text-2xl font-semibold mb-6 text-orange-700 flex items-center gap-2">❌ Cancelled Bookings</h3>
+      <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+        @for (cb of filteredCancelledProperties.slice(0, visibleCancelledProperties); track $index) {
+          <div
+            class="border border-gray-200 rounded-xl shadow hover:shadow-lg hover:-translate-y-1 transition bg-white p-5">
+            <div class="flex justify-between items-center mb-3">
+              <h4 class="text-lg font-semibold text-gray-800">{{ cb.title }}</h4>
+              <span class="text-sm bg-red-100 text-red-600 px-3 py-1 rounded-full">Cancelled</span>
+            </div>
+            <p class="text-sm text-gray-600 mb-2">📍 {{ cb.address }}</p>
+            <p class="text-gray-700 font-medium mb-2">💰 ₹{{ cb.price }}</p>
+            <p class="text-xs px-2 py-1 rounded bg-gray-100 inline-block mb-3">{{ cb.furnished }}</p>
+            <div class="text-sm text-gray-700 mb-3">
+              <p><span class="font-medium">Owner:</span> {{ cb.ownerName }} ({{ cb.ownerEmail }})</p>
+              <p><span class="font-medium">Booked By:</span> {{ cb.userName }} ({{ cb.userEmail }})</p>
+            </div>
+            <div class="mt-3 border-t pt-2 text-xs text-gray-500">
+              <p><span class="font-medium">Check-In:</span> {{ cb.checkInDate | date }}</p>
+              <p><span class="font-medium">Cancelled On:</span> {{ cb.cancelledAt | date }}</p>
+            </div>
+          </div>
+        }
+      </div>
+      @if (filteredCancelledProperties.length > 3) {
+        <div class="text-center mt-4">
+          <button (click)="toggleShow('cancelled', filteredCancelledProperties.length)"
+            class="bg-orange-600 text-white px-4 py-2 rounded-xl hover:bg-orange-700 shadow transition">
+            {{ visibleCancelledProperties >= filteredCancelledProperties.length ? 'Show Less' : 'Show More' }}
+          </button>
+        </div>
+      }
+    </div>
+
+    <!-- FEEDBACK -->
+    <div class="p-6 rounded-2xl bg-purple-50 border-l-4 border-purple-500 shadow">
+      <h3 class="text-2xl font-semibold mb-6 text-purple-700 flex items-center gap-2">💬 Feedback</h3>
+      <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+        @for (f of filteredFeedbacks.slice(0, visibleFeedbacks); track $index) {
+          <div
+            class="p-6 border border-gray-200 rounded-2xl shadow bg-white hover:shadow-lg hover:-translate-y-1 transition">
+            <h4 class="text-lg font-bold text-gray-800">{{ f.name }}</h4>
+            <p class="text-gray-500 text-sm">{{ f.email }}</p>
+            <p class="text-sm text-gray-700 mt-3 italic">“{{ f.feedback }}”</p>
+          </div>
+        }
+      </div>
+      @if (filteredFeedbacks.length > 3) {
+        <div class="text-center mt-4">
+          <button (click)="toggleShow('feedbacks', filteredFeedbacks.length)"
+            class="bg-purple-600 text-white px-4 py-2 rounded-xl hover:bg-purple-700 shadow transition">
+            {{ visibleFeedbacks >= filteredFeedbacks.length ? 'Show Less' : 'Show More' }}
+          </button>
+        </div>
+      }
+    </div>
+
+  </div>
+</div>

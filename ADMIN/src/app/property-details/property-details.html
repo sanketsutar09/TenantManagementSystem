@@ -1,0 +1,576 @@
+<div class="p-6 min-h-screen lg:mt-0 sm:mt-15 md:mt-15    ">
+
+  <!-- Filters Section -->
+  <div
+    class="rounded-xl p-6 mb-10 max-w-7xl mx-auto bg-white bg-gradient-to-tr from-indigo-50 via-white to-indigo-100 shadow-lg ring-1 ring-indigo-200">
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-4">
+
+      <!-- Search -->
+      <div class="col-span-full lg:col-span-1 flex items-center">
+        <input type="text" placeholder="Search by address..." [(ngModel)]="searchText" (input)="filterProperties()"
+          class="w-full px-4 py-2 text-sm font-medium text-gray-700 placeholder-gray-400 border border-indigo-200 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400 transition" />
+      </div>
+
+      <!-- Address Filter -->
+      <select [(ngModel)]="selectedAddress" (change)="filterProperties()" class="filter-select custom-select">
+        <option value="" selected class="text-gray-400">All Addresses</option>
+        @for (addr of uniqueAddresses; track $index) {
+        <option [value]="addr">{{ addr }}</option>
+        }
+      </select>
+
+      <!-- Type Filter -->
+      <select [(ngModel)]="selectedType" (change)="filterProperties()" class="filter-select custom-select">
+        <option value="" selected class="text-gray-400">All Types</option>
+        @for (t of uniqueTypes; track $index) {
+        <option [value]="t">{{ t }}</option>
+        }
+      </select>
+
+      <!-- BHK Filter -->
+      <select [(ngModel)]="selectedBHK" (change)="filterProperties()" class="filter-select custom-select">
+        <option value="" selected class="text-gray-400">All BHK</option>
+        @for (b of uniqueBHKs; track $index) {
+        <option [value]="b">{{ b }}</option>
+        }
+      </select>
+
+      <!-- Furnished Filter -->
+      <select [(ngModel)]="selectedFurnished" (change)="filterProperties()" class="filter-select custom-select">
+        <option value="" selected class="text-gray-400">All Furnished</option>
+        @for (f of uniqueFurnished; track $index) {
+        <option [value]="f">{{ f }}</option>
+        }
+      </select>
+           <!-- Reports Section -->
+<div class="px-4 py-2 bg-green-600 text-white rounded-lg shadow hover:bg-green-700">
+  <button
+    (click)="generateReport('Properties')"
+    >
+    Generate Report
+  </button>
+</div>
+
+      <!-- Email Filter -->
+<select [(ngModel)]="selectedEmail" (change)="filterProperties()" class="filter-select custom-select">
+  <option value="" selected class="text-gray-400">All Emails</option>
+  @for (email of uniqueEmails; track $index) {
+  <option [value]="email">{{ email }}</option>
+  }
+</select>
+
+<!-- Min Price -->
+<input type="number" placeholder="Min Price" [(ngModel)]="minPrice" (input)="filterProperties()"
+  class="w-full px-4 py-2 text-sm border border-indigo-200 rounded-md focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400" />
+
+<!-- Max Price -->
+<input type="number" placeholder="Max Price" [(ngModel)]="maxPrice" (input)="filterProperties()"
+  class="w-full px-4 py-2 text-sm border border-indigo-200 rounded-md focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400" />
+
+<!-- Min Size -->
+<input type="number" placeholder="Min Size (sqft)" [(ngModel)]="minSize" (input)="filterProperties()"
+  class="w-full px-4 py-2 text-sm border border-indigo-200 rounded-md focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400" />
+
+<!-- Max Size -->
+<input type="number" placeholder="Max Size (sqft)" [(ngModel)]="maxSize" (input)="filterProperties()"
+  class="w-full px-4 py-2 text-sm border border-indigo-200 rounded-md focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400" />
+
+
+ 
+
+    </div>
+  </div>
+
+<!-- Property Cards -->
+ <div class=" bg-white bg-opacity-30 rounded-xl shadow p-6">
+  <h2 class="text-3xl font-extrabold mb-4 text-left text-indigo-700">Properties</h2>
+<div class="mt-5 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+  
+  @if (filteredProperties.length === 0) {
+    <div class="col-span-full text-center py-16 text-gray-500 font-semibold text-lg">
+      No properties found matching your criteria.
+    </div>
+  }
+
+  @for (prop of (showAllProperties ? filteredProperties : filteredProperties.slice(0, 3)); track $index) {
+    <div
+      class="bg-white shadow-md rounded-2xl border border-gray-100 overflow-hidden hover:shadow-xl transition duration-300 group">
+
+      <!-- Image Section -->
+      <div class="relative">
+        <img
+          [src]="getImageUrl(prop.images[prop.currentImageIndex])"
+          class="w-full h-56 object-cover cursor-pointer transition-transform duration-300 group-hover:scale-105"
+          (click)="openImageModal(getImageUrl(prop.images[prop.currentImageIndex]))"
+        />
+
+        <!-- Availability Badge -->
+        <span
+          class="absolute top-4 left-4 px-3 py-1 text-xs font-semibold rounded-full shadow-md"
+          [ngClass]="{
+            'bg-green-100 text-green-700': prop.available > 0,
+            'bg-red-100 text-red-600': prop.available === 0
+          }"
+        >
+          {{ prop.available > 0 ? prop.available + ' Available' : 'Fully Booked' }}
+        </span>
+
+        <!-- Price Tag -->
+        <div
+          class="absolute bottom-4 right-4 bg-indigo-600 text-white px-4 py-2 rounded-xl shadow-md font-semibold text-sm"
+        >
+          ₹{{ prop.price }}
+        </div>
+      </div>
+
+      <!-- Card Body -->
+      <div class="p-5 space-y-3">
+        <!-- Title -->
+        <h3
+          class="text-lg font-bold text-gray-800 truncate group-hover:text-indigo-600 transition"
+        >
+          {{ prop.title }}
+        </h3>
+
+        <!-- Meta -->
+        <div class="flex flex-wrap gap-2 text-sm text-gray-600">
+          <span class="px-2 py-1 bg-gray-100 rounded-lg">{{ prop.type }}</span>
+          <span class="px-2 py-1 bg-gray-100 rounded-lg">{{ prop.bhk }}</span>
+          <span class="px-2 py-1 bg-gray-100 rounded-lg">{{ prop.size }} sqft</span>
+        </div>
+
+        <!-- Address -->
+        <p class="text-sm text-gray-500 flex items-center">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1 text-indigo-500" fill="none"
+            viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M12 11c1.656 0 3-1.344 3-3s-1.344-3-3-3-3 1.344-3 3 1.344 3 3 3z"/>
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M12 22s8-6.16 8-13a8 8 0 10-16 0c0 6.84 8 13 8 13z"/>
+          </svg>
+          {{ prop.address }}
+        </p>
+
+        <!-- Furnished -->
+        <p class="text-sm">
+          <span class="font-semibold">Furnished:</span> {{ prop.furnished }}
+        </p>
+
+        <!-- Actions -->
+        <div class="pt-3 flex justify-end items-center gap-5">
+          <button
+            class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-medium shadow-md transition disabled:opacity-50 disabled:cursor-not-allowed"
+            [disabled]="prop.available <= 0"
+            (click)="openCardModal(prop)">
+            Edit
+          </button>
+
+          <button
+            class="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-xl font-medium shadow-md transition"
+            (click)="viewDetailModel(prop)">
+            View Details
+          </button>
+        </div>
+      </div>
+    </div>
+  }
+</div>
+</div>
+
+
+
+  <!-- See All / Show Less Buttons -->
+  <div class="text-center mt-6">
+    @if (!showAllProperties && filteredProperties.length > 3) {
+    <button (click)="showAllProperties = true"
+      class="btn-primary px-6 py-2 rounded-md shadow-md hover:bg-indigo-700 transition">
+      See All Properties
+    </button>
+    }
+    @if (showAllProperties && filteredProperties.length > 3) {
+    <button (click)="showAllProperties = false"
+      class="btn-secondary px-6 py-2 rounded-md shadow-md hover:bg-gray-600 transition">
+      Show Less
+    </button>
+    }
+  </div>
+
+  <!-- Property Card Modal -->
+  @if (showCardModal && selectedProperty) {
+  <div class="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-50 p-4"
+    (click)="closeCardModal()">
+
+    <div
+      class="bg-white rounded-3xl shadow-2xl w-full max-w-2xl overflow-hidden transform transition-all scale-100 hover:scale-[1.01]"
+      (click)="$event.stopPropagation()">
+
+      <!-- Reuse Card Design -->
+      <div class="bg-white rounded-3xl shadow-lg border border-gray-200 overflow-hidden">
+
+        <!-- Image -->
+        <div class="relative w-full h-64 rounded-t-3xl overflow-hidden">
+          <img [src]="getImageUrl(selectedProperty.images[selectedProperty.currentImageIndex])"
+            class="w-full h-full object-cover transition-transform duration-500 transform hover:scale-110 cursor-pointer"
+            (click)="openImageModal(getImageUrl(selectedProperty.images[selectedProperty.currentImageIndex]))" />
+
+          <!-- Left -->
+          <button
+            class="absolute left-3 top-1/2 z-50 transform -translate-y-1/2 bg-white/70 hover:bg-white text-indigo-700 p-1 rounded-full shadow-lg transition hover:scale-110"
+            (click)="prevImage(selectedProperty)">❮</button>
+
+          <!-- Right -->
+          <button
+            class="absolute right-3 top-1/2 z-50 transform -translate-y-1/2 bg-white/70 hover:bg-white text-indigo-700 p-1 rounded-full shadow-lg transition hover:scale-110"
+            (click)="nextImage(selectedProperty)">❯</button>
+        </div>
+
+        <!-- Content -->
+        <div class="p-6 space-y-4">
+          <section class="mb-8">
+            <h3 class="text-xl font-semibold text-gray-800 border-b border-gray-200 pb-2 mb-4">
+              Owner Details
+            </h3>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-y-3 gap-x-6 text-gray-700">
+              <div><span class="font-semibold">Name:</span> {{ selectedProperty.name }}</div>
+              <div><span class="font-semibold">Email:</span> {{ selectedProperty.email }}</div>
+              <div class="sm:col-span-2"><span class="font-semibold">Contact:</span> {{ selectedProperty.phone }}</div>
+            </div>
+          </section>
+          <h3 class="text-xl font-semibold text-gray-800 border-b border-gray-200 pb-2 mb-4">
+            Property Details
+          </h3>
+          <h3 class="text-2xl font-bold text-indigo-600">{{ selectedProperty.title }}</h3>
+          <p class="text-gray-600 text-sm leading-relaxed">{{ selectedProperty.description }}</p>
+
+          <div class="grid grid-cols-2 gap-3 text-sm text-gray-700 border-t border-gray-200 pt-4">
+            <div><span class="font-semibold">Type:</span> {{ selectedProperty.type }}</div>
+            <div><span class="font-semibold">BHK:</span> {{ selectedProperty.bhk }}</div>
+            <div><span class="font-semibold">Size:</span> {{ selectedProperty.size }} sqft</div>
+            <div><span class="font-semibold">Price:</span> ₹{{ selectedProperty.price }}</div>
+            <div class="col-span-2 mt-2">
+              <span class="font-semibold">Availability:</span>
+              <span class="font-bold"
+                [ngClass]="{ 'text-green-600': selectedProperty.available > 0, 'text-red-500': selectedProperty.available === 0 }">
+                {{ selectedProperty.available > 0 ? selectedProperty.available + ' Available' : 'Fully Booked' }}
+              </span>
+            </div>
+
+          </div>
+
+          <!-- Buttons -->
+          <!-- Buttons -->
+          <div class="flex justify-center gap-4 pt-4">
+            <button
+              class="px-4 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-md font-medium shadow transition disabled:opacity-50 disabled:cursor-not-allowed"
+              (click)="openUpdateModal(selectedProperty)">
+              Update
+            </button>
+
+            <button class="px-4 py-1.5 bg-red-600 hover:bg-red-700 text-white rounded-md font-medium shadow transition"
+              (click)="openDeletePropertyModal(selectedProperty._id)">
+              Delete
+            </button>
+
+            <button
+              class="px-6 py-2 bg-gray-200 hover:bg-gray-300 text-gray-800 rounded-xl font-medium shadow-md transition"
+              (click)="closeCardModal()">
+              Close
+            </button>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+  }
+
+  <!-- view details -->
+     <!-- Property Card Modal -->
+  @if (veiwDetailModel && selectedProperty) {
+  <div class="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-50 p-4"
+    (click)="closeCardModal()">
+
+    <div
+      class="bg-white rounded-3xl shadow-2xl w-full max-w-2xl overflow-hidden transform transition-all scale-100 hover:scale-[1.01]"
+      (click)="$event.stopPropagation()">
+
+      <!-- Reuse Card Design -->
+      <div class="bg-white rounded-3xl shadow-lg border border-gray-200 overflow-hidden">
+
+        <!-- Image -->
+        <div class="relative w-full h-64 rounded-t-3xl overflow-hidden">
+          <img [src]="getImageUrl(selectedProperty.images[selectedProperty.currentImageIndex])"
+            class="w-full h-full object-cover transition-transform duration-500 transform hover:scale-110 cursor-pointer"
+            (click)="openImageModal(getImageUrl(selectedProperty.images[selectedProperty.currentImageIndex]))" />
+
+          <!-- Left -->
+          <button
+            class="absolute left-3 top-1/2 z-50 transform -translate-y-1/2 bg-white/70 hover:bg-white text-indigo-700 p-1 rounded-full shadow-lg transition hover:scale-110"
+            (click)="prevImage(selectedProperty)">❮</button>
+
+          <!-- Right -->
+          <button
+            class="absolute right-3 top-1/2 z-50 transform -translate-y-1/2 bg-white/70 hover:bg-white text-indigo-700 p-1 rounded-full shadow-lg transition hover:scale-110"
+            (click)="nextImage(selectedProperty)">❯</button>
+        </div>
+
+        <!-- Content -->
+        <div class="p-6 space-y-4">
+          <section class="mb-8">
+            <h3 class="text-xl font-semibold text-gray-800 border-b border-gray-200 pb-2 mb-4">
+              Owner Details
+            </h3>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-y-3 gap-x-6 text-gray-700">
+              <div><span class="font-semibold">Name:</span> {{ selectedProperty.name }}</div>
+              <div><span class="font-semibold">Email:</span> {{ selectedProperty.email }}</div>
+              <div class="sm:col-span-2"><span class="font-semibold">Contact:</span> {{ selectedProperty.phone }}</div>
+            </div>
+          </section>
+          <h3 class="text-xl font-semibold text-gray-800 border-b border-gray-200 pb-2 mb-4">
+            Property Details
+          </h3>
+          <h3 class="text-2xl font-bold text-indigo-600">{{ selectedProperty.title }}</h3>
+          <p class="text-gray-600 text-sm leading-relaxed">{{ selectedProperty.description }}</p>
+
+          <div class="grid grid-cols-2 gap-3 text-sm text-gray-700 border-t border-gray-200 pt-4">
+            <div><span class="font-semibold">Type:</span> {{ selectedProperty.type }}</div>
+            <div><span class="font-semibold">BHK:</span> {{ selectedProperty.bhk }}</div>
+            <div><span class="font-semibold">Size:</span> {{ selectedProperty.size }} sqft</div>
+            <div><span class="font-semibold">Price:</span> ₹{{ selectedProperty.price }}</div>
+            <div class="col-span-2 mt-2">
+              <span class="font-semibold">Availability:</span>
+              <span class="font-bold"
+                [ngClass]="{ 'text-green-600': selectedProperty.available > 0, 'text-red-500': selectedProperty.available === 0 }">
+                {{ selectedProperty.available > 0 ? selectedProperty.available + ' Available' : 'Fully Booked' }}
+              </span>
+            </div>
+
+          </div>
+
+          <!-- Buttons -->
+          <!-- Buttons -->
+          <div class="flex justify-center gap-4 pt-4">
+            <button
+              class="px-6 py-2 bg-gray-200 hover:bg-gray-300 text-gray-800 rounded-xl font-medium shadow-md transition"
+              (click)="closeCardModal()">
+              Close
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  }
+<!-- Update Property Modal -->
+@if (showUpdateModal && selectedProperty) {
+  <div class="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4" (click)="closeUpdateModal()">
+    <div
+      class="bg-white rounded-3xl w-full max-w-5xl p-6 md:p-8 shadow-2xl transform transition-transform duration-300 scale-95 overflow-hidden max-h-[90vh] flex flex-col"
+      (click)="$event.stopPropagation()">
+
+      <!-- Modal Header -->
+      <h3 class="text-3xl font-bold text-gray-800 mb-6 text-center">
+        Update Property
+      </h3>
+
+      <!-- Modal Body (scrollable) -->
+      <div class="overflow-auto flex-1 pr-2">
+        <form [formGroup]="propertyForm" (ngSubmit)="submitUpdate()" class="space-y-8">
+
+          <!-- ========================= Your Details ========================= -->
+          <section class="border border-gray-200 rounded-xl p-6 bg-gray-50">
+            <h2 class="text-2xl font-semibold text-gray-800 mb-6">Your Details</h2>
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              <!-- Name -->
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Name</label>
+                <input formControlName="name" type="text" placeholder="Enter your name"
+                  class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500" />
+                @if (propertyForm.get('name')?.touched && propertyForm.get('name')?.invalid) {
+                  <span class="text-red-600 text-sm mt-1">Name is required.</span>
+                }
+              </div>
+
+              <!-- Email -->
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Email</label>
+                <input formControlName="email" type="email" placeholder="Enter your email"
+                  class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500" />
+                @if (propertyForm.get('email')?.touched && propertyForm.get('email')?.invalid) {
+                  <span class="text-red-600 text-sm mt-1">Valid email is required.</span>
+                }
+              </div>
+
+              <!-- Phone -->
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Phone</label>
+                <input formControlName="phone" type="text" placeholder="10-digit phone number"
+                  class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500" />
+                @if (propertyForm.get('phone')?.invalid && propertyForm.get('phone')?.touched) {
+                  <p class="text-red-500 text-sm">Enter a valid 10-digit phone number.</p>
+                }
+              </div>
+            </div>
+          </section>
+
+          <!-- ========================= Property Details ========================= -->
+          <section class="border border-gray-200 rounded-xl p-6 bg-gray-50">
+            <h2 class="text-2xl font-semibold text-gray-800 mb-6">Property Details</h2>
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+
+              <!-- Title -->
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Title</label>
+                <input formControlName="title" type="text" placeholder="Enter property title"
+                  class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500" />
+                @if (propertyForm.get('title')?.touched && propertyForm.get('title')?.invalid) {
+                  <span class="text-red-600 text-sm mt-1">Title is required.</span>
+                }
+              </div>
+
+              <!-- Description -->
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Description</label>
+                <textarea formControlName="description" rows="3" placeholder="Enter property description"
+                  class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500"></textarea>
+                @if (propertyForm.get('description')?.touched && propertyForm.get('description')?.invalid) {
+                  <span class="text-red-600 text-sm mt-1">Description is required.</span>
+                }
+              </div>
+
+              <!-- Type -->
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Property Type</label>
+                <select formControlName="type" (change)="onTypeChange($event)"
+                  class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500">
+                  <option value="">Select</option>
+                  <option value="Flat">Flat</option>
+                  <option value="House">House</option>
+                  <option value="Room">Room</option>
+                </select>
+                @if (propertyForm.get('type')?.touched && propertyForm.get('type')?.invalid) {
+                  <span class="text-red-600 text-sm mt-1">Property type is required.</span>
+                }
+              </div>
+
+              <!-- BHK -->
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">BHK</label>
+                <select formControlName="bhk" [disabled]="isRoomSelected"
+                  class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500">
+                  <option value="">Select</option>
+                  <option value="1BHK">1BHK</option>
+                  <option value="2BHK">2BHK</option>
+                  <option value="3BHK">3BHK</option>
+                </select>
+                @if (propertyForm.get('bhk')?.touched && propertyForm.get('bhk')?.invalid && !isRoomSelected) {
+                  <span class="text-red-600 text-sm mt-1">BHK is required.</span>
+                }
+              </div>
+
+              <!-- Size -->
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Size (sqft)</label>
+                <input formControlName="size" type="number" placeholder="Size in sqft"
+                  class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500" />
+                @if (propertyForm.get('size')?.touched && propertyForm.get('size')?.invalid) {
+                  <span class="text-red-600 text-sm mt-1">Size is required.</span>
+                }
+              </div>
+
+              <!-- Price -->
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Price/Month (₹)</label>
+                <input formControlName="price" type="number" placeholder="Enter price"
+                  class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500" />
+                @if (propertyForm.get('price')?.touched && propertyForm.get('price')?.invalid) {
+                  <span class="text-red-600 text-sm mt-1">Price is required.</span>
+                }
+              </div>
+
+              <!-- Address -->
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Address (City/Village)</label>
+                <select formControlName="address"
+                  class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500">
+                  <option value="">Select location</option>
+                  @for (loc of sangliLocations; track loc) {
+                    <option [value]="loc">{{ loc }}</option>
+                  }
+                </select>
+                @if (propertyForm.get('address')?.touched && propertyForm.get('address')?.invalid) {
+                  <span class="text-red-600 text-sm mt-1">Address is required.</span>
+                }
+              </div>
+
+              <!-- Furnished -->
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Furnishing</label>
+                <select formControlName="furnished"
+                  class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500">
+                  <option value="">Select</option>
+                  <option value="Furnished">Furnished</option>
+                  <option value="Semi-furnished">Semi-Furnished</option>
+                  <option value="Unfurnished">Unfurnished</option>
+                </select>
+                @if (propertyForm.get('furnished')?.touched && propertyForm.get('furnished')?.invalid) {
+                  <span class="text-red-600 text-sm mt-1">Furnishing is required.</span>
+                }
+              </div>
+
+              <!-- Available -->
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Availability</label>
+                <input formControlName="available" type="number" placeholder="Available properties for rent"
+                  class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500" />
+                @if (propertyForm.get('available')?.touched && propertyForm.get('available')?.invalid) {
+                  <span class="text-red-600 text-sm mt-1">Availability is required.</span>
+                }
+              </div>
+
+            </div>
+          </section>
+
+          <!-- ========================= Images ========================= -->
+          <section class="border border-gray-200 rounded-xl p-6 bg-gray-50">
+            <h2 class="text-2xl font-semibold text-gray-800 mb-6">Update Images</h2>
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
+              @for (i of [0, 1, 2]; track i) {
+                <input type="file" #fileInput{{i}} (change)="onFileChange($event, i)" accept="image/*"
+                  class="w-full px-4 py-2 border border-gray-300 rounded-lg bg-white focus:ring-2 focus:ring-green-500" />
+              }
+            </div>
+          </section>
+
+          <!-- Submit -->
+          <div class="flex justify-center pt-4">
+            <button type="submit" [disabled]="propertyForm.invalid"
+              class="bg-green-600 hover:bg-green-700 text-white font-semibold px-8 py-3 rounded-lg shadow-md transition duration-200 disabled:opacity-50 disabled:cursor-not-allowed">
+              Update Property
+            </button>
+          </div>
+
+        </form>
+      </div>
+    </div>
+  </div>
+}
+
+  @if (showPropertyConfirm) {
+  <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
+    <div class="bg-white p-6 rounded-lg shadow-lg w-96 text-center">
+      <h3 class="text-lg font-semibold mb-4">Confirm Delete</h3>
+      <p class="mb-6">Are you sure you want to delete this property?</p>
+      <div class="flex justify-center gap-4">
+        <button (click)="confirmDeleteProperty()" class="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700">
+          Delete
+        </button>
+        <button (click)="closeDeletePropertyModal()" class="bg-gray-300 px-4 py-2 rounded hover:bg-gray-400">
+          Cancel
+        </button>
+      </div>
+    </div>
+  </div>
+  }

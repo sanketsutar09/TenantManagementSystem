@@ -1,0 +1,31 @@
+<div class="flex min-h-screen bg-slate-50">
+  <!-- Show Login Page -->
+  @if (!isAdminLoggedIn) {
+    <app-admin-login
+      class="flex-1 flex items-center justify-center bg-blend-luminosity
+             bg-gradient-to-tr from-indigo-500 via-indigo-400 to-indigo-600
+             text-white">
+    </app-admin-login>
+  }
+
+  <!-- Show Dashboard Layout -->
+  @if (isAdminLoggedIn) {
+    <!-- Sidebar -->
+    <app-admin-navbar
+      class="sticky top-0 left-0 h-full lg:w-64 
+             bg-indigo-100 bg-blend-darken
+             text-gray-100 shadow-2xl shadow-black z-50">
+    </app-admin-navbar>
+
+    <!-- Main Content -->
+    <div
+      class="flex-1 overflow-y-auto 
+            bg-indigo-100 bg-blend-soft-light bg-gradient-to-tl 
+             p-8">
+      <router-outlet></router-outlet>
+    </div>
+  }
+</div>
+
+
+
