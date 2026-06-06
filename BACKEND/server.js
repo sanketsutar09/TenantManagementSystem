@@ -1,3 +1,4 @@
+require("dotenv").config();
 const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
@@ -19,7 +20,8 @@ app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 app.use('/userUpload', express.static(path.join(__dirname, 'userUpload')));
 
 
-mongoose.connect("mongodb://localhost:27017/tenantSystem")
+const MONGODB_URI = process.env.MONGODB_URI || "mongodb://localhost:27017/tenantSystem";
+mongoose.connect(MONGODB_URI)
 .then(() => console.log("MongoDB connected"))
   .catch((err) => console.log("DB Error:", err));
 
@@ -32,5 +34,5 @@ app.use('/api/admin', adminRoutes);
 app.use("/api/bookings", bookingRoutes);
 
 
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));

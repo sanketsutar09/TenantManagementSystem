@@ -132,7 +132,8 @@ router.put("/update/:id", userUpload.single("profileImage"), async (req, res) =>
     }
 
     if (req.file) {
-      updateData.profileImage = `http://localhost:3000/userUpload/${req.file.filename}`;
+      const baseUrl = process.env.BASE_URL || `${req.protocol}://${req.get('host')}`;
+      updateData.profileImage = `${baseUrl}/userUpload/${req.file.filename}`;
     }
 
     const updatedUser = await User.findByIdAndUpdate(

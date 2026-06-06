@@ -9,6 +9,7 @@ import { UserFooterComponent } from "../user-footer/user-footer.component";
 import { AboutUsComponent } from "../about-us/about-us.component";
 import { ContactUsComponent } from "../contact-us/contact-us.component";
 import { AlertComponent } from "../shared/alert/alert.component";
+import { environment } from '../../environments/environment';
 
 @Component({
   selector: 'app-property-list',
@@ -82,7 +83,7 @@ export class PropertyList implements OnInit {
   }
 
   getImageUrl(filename: string): string {
-    return `http://localhost:3000/uploads/${filename}`;
+    return `${environment.uploadsUrl}/${filename}`;
   }
 
 

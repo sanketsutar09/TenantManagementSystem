@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
+import { environment } from '../../environments/environment';
 
 export interface Booking {
   _id: string;
@@ -31,7 +32,7 @@ export interface Booking {
 })
 export class BookingService {
 
-   private apiUrl = 'http://localhost:3000/api/bookings';
+   private apiUrl = `${environment.apiUrl}/bookings`;
 
   constructor(private http: HttpClient) {}
 

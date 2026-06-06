@@ -2,6 +2,7 @@ import { Injectable, Inject, PLATFORM_ID, NgZone } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { BehaviorSubject, map, Observable } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
+import { environment } from '../../environments/environment';
 
 // models/user.model.ts
 export interface User {
@@ -18,7 +19,7 @@ export interface User {
   providedIn: 'root'
 })
 export class AuthService {
-  private baseUrl = 'http://localhost:3000/api/user';
+  private baseUrl = `${environment.apiUrl}/user`;
   private userEmailSource = new BehaviorSubject<string | null>(null);
   userEmail$ = this.userEmailSource.asObservable();
   isLoggedIn$ = this.userEmail$.pipe(map(email => !!email));
@@ -85,26 +86,26 @@ export class AuthService {
 
   getUserBookings(email: string) {
   return this.http.get(
-    `http://localhost:3000/api/booking/user/${encodeURIComponent(email)}`
+    `${environment.apiUrl}/booking/user/${encodeURIComponent(email)}`
   );
 }
 
 cancelUserbooking(bookingId: string): Observable<any>{
-  return this.http.delete(`http://localhost:3000/api/booking/${bookingId}`)
+  return this.http.delete(`${environment.apiUrl}/booking/${bookingId}`)
 }
 
-private apiUrl = 'http://localhost:3000/api/contact';
+private apiUrl = `${environment.apiUrl}/contact`;
 
  sendContactForm(data: any): Observable<any> {
     return this.http.post(this.apiUrl, data);
   }
 
   sendFeedback(data: any){
-    return this.http.post('http://localhost:3000/api/feedback', data)
+    return this.http.post(`${environment.apiUrl}/feedback`, data)
   }
 
   getBookingsForMyProperties(email: string) {
-  return this.http.get<any[]>(`http://localhost:3000/api/booking/owner/${email}`);
+  return this.http.get<any[]>(`${environment.apiUrl}/booking/owner/${email}`);
 }
 
 

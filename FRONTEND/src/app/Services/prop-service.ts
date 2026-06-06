@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
+import { environment } from '../../environments/environment';
 export interface Property {
   _id: string;
   title: string;
@@ -21,8 +22,8 @@ export interface Property {
   providedIn: 'root'
 })
 export class PropService {
-   private baseUrl = 'http://localhost:3000/api/property';
-   private bookingUrl = 'http://localhost:3000/api/booking';
+   private baseUrl = `${environment.apiUrl}/property`;
+   private bookingUrl = `${environment.apiUrl}/booking`;
 
   constructor(private http: HttpClient) {}
 

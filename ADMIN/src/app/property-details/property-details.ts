@@ -4,6 +4,7 @@ import { PropertyService } from '../adminServices/property-service';
 import { CommonModule, DatePipe, JsonPipe } from '@angular/common';
 import { FormsModule, ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { dateTimestampProvider } from 'rxjs/internal/scheduler/dateTimestampProvider';
+import { environment } from '../../environments/environment';
 
 
 @Component({
@@ -278,7 +279,7 @@ this.uniqueEmails = [...new Set(data.map(p => p.email))];
   }
 
   getImageUrl(filename: string): string {
-    return `http://localhost:3000/uploads/${filename}`;
+    return `${environment.uploadsUrl}/${filename}`;
   }
 
   trackByIndex(index: number): number {
